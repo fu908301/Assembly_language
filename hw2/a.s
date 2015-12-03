@@ -25,25 +25,20 @@ main:
 	ldr r7, [r1,#4]!
 	ldrb v3,[r7]
 	sub v3,v3,#48
-	cmp v3,#0
-	beq F0
-	cmp v3,#1
-	beq F1
-	cmp v3,#2
-	beq F2
-	cmp v3,#3
-	beq F3
-	cmp v3,#4
-	beq F4
-	cmp v3,#5
-	beq F5
-	cmp v3,#6
-	beq F6
-	cmp v3,#7
-	beq F7
-	cmp v3,#8
-
-	beq F8
+	adr v2, JUMPTABLE
+	cmp v3 ,#8
+	addls v2,v2,v3,LSL #2
+	movls pc,v2
+JUMPTABLE:
+	b F0
+	b F1
+	b F2
+	b F3
+	b F4
+	b F5
+	b F6
+	b F7
+	b F8
 F0:
 	mov r1, v5 
 	mov r2, v6
@@ -134,8 +129,10 @@ SUBX:
 F7:
 	mov r1, v5
 	mov r2, v6
-	mul r3, v5, v6
 	ldr r0,=TEX7
+	bl printf
+	smull r2,r3,v5,v6
+	ldr r0,=TEX7Z
 	bl printf
 	B EXIT
 F8:
@@ -193,7 +190,9 @@ TEX5:
 TEX6:
 	.asciz "GCD %d %d : %d\n"
 TEX7:
-	.asciz "Mul %d %d : %d\n"
+	.asciz "Mul %d %d : "
+TEX7Z:
+	.asciz "%lld\n"
 TEX8:
 	.asciz "LCM %d %d : %d\n"
 
